@@ -1,24 +1,30 @@
-// src/router/index.js
 import { createRouter, createWebHistory } from 'vue-router';
 import CocktailList from '@/components/cocktails/list.vue';
 import CocktailNew from '@/components/cocktails/new.vue';
+import CocktailDetails from '@/components/cocktails/view.vue';
 
 const routes = [
-  {
-    path: '/',
-    name: 'CocktailList',
-    component: CocktailList,
-  },
-  {
-    path: '/new',
-    name: 'CocktailNew',
-    component: CocktailNew,
-  },
+    {
+        path: '/',
+        name: 'CocktailList',
+        component: CocktailList,
+    },
+    {
+        path: '/new',
+        name: 'CocktailNew',
+        component: CocktailNew,
+    },
+    {
+        path: '/:id',
+        name: 'CocktailDetails',
+        component: CocktailDetails,
+        props: true,
+    },
 ];
 
 const router = createRouter({
-  history: createWebHistory(),
-  routes,
+    history: createWebHistory(),
+    routes,
 });
 
 export default router;
