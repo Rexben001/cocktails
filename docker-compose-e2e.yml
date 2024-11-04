@@ -1,0 +1,59 @@
+services:
+    backend-e2e:
+        build:
+            context: ./backend
+            dockerfile: .docker/e2e/Dockerfile
+        volumes:
+            - ./backend:/test
+            - /test/node_modules
+        environment:
+            DATABASE_URL: postgres://user:password@db-e2e:5432/mydatabase_e2e
+            ELASTICSEARCH_HOST: http://elasticsearch-e2e:9200
+        depends_on:
+            - db-e2e
+            - elasticsearch-e2e
+        networks:
+            - test-network
+
+    elasticsearch-e2e:
+        image: docker.elastic.co/elasticsearch/elasticsearch:8.6.0
+        container_name: elasticsearch-e2e
+        environment:
+            - discovery.type=single-node
+            - ES_JAVA_OPTS=-Xms512m -Xmx512m
+            - ingest.geoip.downloader.enabled=false
+            - logger.level=warn
+            - xpack.security.enabled=false
+            - xpack.security.http.ssl.enabled=false
+        ports:
+            - 9200:9200
+            - 9300:9300
+        networks:
+            - test-network
+        healthcheck:
+            test: ['CMD', 'curl', '-f', 'http://localhost:9200/_cluster/health']
+            interval: 30s
+            timeout: 10s
+            retries: 5
+
+    db-e2e:
+        image: postgres:13
+        environment:
+            POSTGRES_USER: user
+            POSTGRES_PASSWORD: password
+            POSTGRES_DB: mydatabase_e2e
+        volumes:
+            - ./db-init-e2e.sql:/docker-entrypoint-initdb.d/init-e2e.sql
+        ports:
+            - '5432:5432'
+        networks:
+            - test-network
+        healthcheck:
+            test: ['CMD', 'pg_isready', '-U', 'user']
+            interval: 30s
+            timeout: 10s
+            retries: 5
+
+networks:
+    test-network:
+        driver: bridge
