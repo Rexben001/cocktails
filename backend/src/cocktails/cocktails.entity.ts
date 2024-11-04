@@ -1,16 +1,41 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { ApiProperty, PickType } from '@nestjs/swagger';
+import { IsNotEmpty, IsPositive, IsString, MaxLength } from 'class-validator';
+import { Entity, Column, PrimaryGeneratedColumn, Index } from 'typeorm';
 
 @Entity()
+@Index(['title'], { unique: true })
 export class Cocktails {
-  @PrimaryGeneratedColumn()
-  id: number;
+    @ApiProperty({
+        description: 'Unique identifier for the cocktail',
+        default: 1,
+    })
+    @PrimaryGeneratedColumn()
+    id: number;
 
-  @Column()
-  title: string;
+    @ApiProperty({
+        description: 'The title of the cocktail',
+        default: 'Mojito Classic',
+    })
+    @IsString()
+    @IsNotEmpty()
+    @MaxLength(100)
+    @Column()
+    title: string;
 
-  @Column()
-  description: string;
+    @ApiProperty({
+        description: 'Detailed description of the cocktail',
+        default: 'Mojito Classic is lekker',
+    })
+    @IsString()
+    @Column()
+    description: string;
 
-  @Column()
-  price: number;
+    @ApiProperty({
+        description: 'Price of the cocktail',
+        default: 10,
+    })
+    @IsPositive()
+    @IsNotEmpty()
+    @Column('decimal')
+    price: number;
 }

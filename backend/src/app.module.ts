@@ -5,15 +5,15 @@ import { CocktailsModule } from './cocktails/cocktails.module';
 import { ElasticSearch } from './elasticsearch.service';
 
 @Module({
-  imports: [
-    TypeOrmModule.forRoot({
-      url: process.env.DATABASE_URL,
-      type: 'postgres',
-      logging: true,
-      entities: [Cocktails],
-    }),
-    CocktailsModule,
-  ],
-  providers: [ElasticSearch]
+    imports: [
+        TypeOrmModule.forRoot({
+            url: process.env.DATABASE_URL,
+            type: 'postgres',
+            logging: true,
+            entities: [Cocktails],
+        }),
+        CocktailsModule,
+    ],
+    providers: [ElasticSearch],
 })
 export class AppModule {}
